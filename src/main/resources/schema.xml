@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   package="baseline"
+                   id="1"
+                   version="0"
+                   semanticVersion="5.2"
+                   description="Example base schema which can be extended."
+                   byteOrder="littleEndian">
+    <types>
+        <composite name="messageHeader"
+                   description="Message identifiers and length of message root.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+        <composite name="Decimal">
+            <type name="mantissa" primitiveType="uint64" minValue="0"/>
+            <type name="exponent" primitiveType="int8"/>
+        </composite>
+        <composite name="varStringEncoding" description="Variable length UTF-8 String.">
+            <type name="length" primitiveType="uint32" maxValue="1073741824"/>
+            <type name="varData" primitiveType="uint8" length="0" characterEncoding="UTF-8"/>
+        </composite>
+        <composite name="varAsciiEncoding" description="Variable length ASCII String.">
+            <type name="length" primitiveType="uint32" maxValue="1073741824"/>
+            <type name="varData" primitiveType="uint8" length="0" characterEncoding="ASCII"/>
+        </composite>
+
+        <composite name="decimal">
+            <type name="mantissa" primitiveType="int64"/>
+            <type name="exponent" primitiveType="int8"/>
+        </composite>
+        <type name="String64" primitiveType="char" length="64" characterEncoding="ASCII"
+              description="String of length 64"/>
+
+
+        <composite name="decimal32">
+            <type name="mantissa" primitiveType="int32"/>
+            <type name="exponent" primitiveType="int8"
+                  presence="constant">-2
+            </type>
+        </composite>
+
+        <composite name="decimal64">
+            <type name="mantissa" primitiveType="int64"/>
+            <type name="exponent" primitiveType="int8"
+                  presence="constant">-2
+            </type>
+        </composite>
+    </types>
+    <sbe:message name="CityTemp" id="1" description="Represents a quote and amount of trade">
+        <field name="city" id="1" type="String64"/>
+        <field name="temperature" id="2" type="double"/>
+    </sbe:message>
+
+    <sbe:message id="2" name="CityStatisticsEvent">
+        <field name="city" id="1" type="String64"/>
+        <field name="minTemperature" id="2" type="float"/>
+        <field name="maxTemperature" id="3" type="float"/>
+        <field name="avgTemperature" id="4" type="float"/>
+    </sbe:message>
+</sbe:messageSchema>
