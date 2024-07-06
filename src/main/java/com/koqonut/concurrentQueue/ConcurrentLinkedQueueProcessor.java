@@ -34,7 +34,7 @@ public class ConcurrentLinkedQueueProcessor {
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_clq.log:time,level,tags", "-Xms8g", "-Xmx8g","-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_clq.log:time,level,tags","-XX:+UseStringDeduplication"})
     public void benchmarkConcurrentLinkedQueue() throws ExecutionException, InterruptedException {
 
 

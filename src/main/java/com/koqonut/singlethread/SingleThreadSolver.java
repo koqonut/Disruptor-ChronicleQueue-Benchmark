@@ -55,8 +55,9 @@ public class SingleThreadSolver {
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_single.log:time,level,tags", "-Xms8g", "-Xmx8g", "-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_single.log:time,level,tags", "-XX:+UseStringDeduplication"})
     public void process() throws IOException {
+        // "-Xms8g", "-Xmx8g"
         MyFileWriter.printToFile(Constants.PERF_S, "------------------------------");
 
         MyFileWriter.printToFile(Constants.PERF_S, "Start time " + new Date());
