@@ -22,10 +22,10 @@ public class InputProcessor {
     private static final int COUNT = Constants.RECORDS_TO_READ;
     private static final Logger logger = LoggerFactory.getLogger(InputProcessor.class);
 
-    @Param({"8192", "16384", "32768", "131072", "524288"})
+    @Param({"4096","8192", "16384", "32768", "131072"})
     public int ringBufferSize;
 
-    @Param({"true","false"})
+    @Param({"false"})
     public boolean shouldJournal;
 
     public static void main(String[] args) throws IOException {

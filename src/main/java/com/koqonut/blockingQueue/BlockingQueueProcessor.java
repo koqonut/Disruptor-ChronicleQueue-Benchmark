@@ -24,7 +24,7 @@ public class BlockingQueueProcessor {
     public int numWriters;
 
 
-    @Param({"8192", "16384", "32768", "131072", "524288"})
+    @Param({"4096", "8192", "16384", "32768", "131072"})
     public int queueSize;
 
 
