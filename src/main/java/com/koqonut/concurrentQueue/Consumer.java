@@ -10,6 +10,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Consumer implements Callable<Boolean> {
@@ -21,11 +22,12 @@ public class Consumer implements Callable<Boolean> {
     private final ConcurrentHashMap<String, Long> countTemp = new ConcurrentHashMap<>();
 
     private final AtomicLong recordCount;
+    private final Semaphore semaphore;
 
-
-    public Consumer(ConcurrentLinkedQueue<String> queue, long numRecords) {
+    public Consumer(ConcurrentLinkedQueue<String> queue, long numRecords, Semaphore semaphore) {
         this.queue = queue;
         this.recordCount = new AtomicLong(numRecords);
+        this.semaphore = semaphore;
     }
 
     @Override
@@ -39,10 +41,12 @@ public class Consumer implements Callable<Boolean> {
             }
             String data = queue.poll();
             if (data != null) {
+                semaphore.release();
                 recordCount.getAndDecrement();
                 // Parse data (assuming format: city;temperature)
                 String[] parts = data.split(";");
                 String city = parts[0].trim();
+
                 double temperature = Double.parseDouble(parts[1].trim());
 
                 maxTemp.put(city, Math.max(maxTemp.getOrDefault(city, Double.MIN_VALUE), temperature));

@@ -42,7 +42,7 @@ public class SingleThreadSolver {
 
 
     public static void main(String[] args) {
-        //com.koqonut.singlethread.SingleThreadSolver.process
+        //java -jar target/Chronicle-Queue-1.0-SNAPSHOT.jar com.koqonut.singlethread.SingleThreadSolver -o out/benchmark/jmh_16g.txt
         //org.openjdk.jmh.Main.main(args);
     }
 

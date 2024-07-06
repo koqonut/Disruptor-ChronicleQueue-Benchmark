@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Producer implements Callable<Boolean> {
@@ -17,11 +18,13 @@ public class Producer implements Callable<Boolean> {
     private final ConcurrentLinkedQueue<String> queue;
     private final String filename;
     private final AtomicLong numOfRecords;
+    private final Semaphore semaphore;
 
-    public Producer(ConcurrentLinkedQueue<String> queue, String filename, long numRecords) {
+    public Producer(ConcurrentLinkedQueue<String> queue, String filename, long numRecords, Semaphore semaphore) {
         this.queue = queue;
         this.filename = filename;
         this.numOfRecords = new AtomicLong(numRecords);
+        this.semaphore = semaphore;
     }
 
     @Override
@@ -33,11 +36,11 @@ public class Producer implements Callable<Boolean> {
                 if (numOfRecords.get() % Constants.LOG_DISPLAYER == 0) {
                     logger.info("Producer processed {} records", numOfRecords.get());
                 }
-
+                semaphore.acquire();
                 queue.offer(line); // Add line to the queue, wait if it is full
 
             }
-        } catch (IOException e) {
+        } catch (IOException|InterruptedException e) {
             logger.error("Error encountered {}", e.getMessage());
         }
         logger.info("Published all records ");
