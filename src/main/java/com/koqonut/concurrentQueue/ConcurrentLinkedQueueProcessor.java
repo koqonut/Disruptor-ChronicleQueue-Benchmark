@@ -17,16 +17,16 @@ public class ConcurrentLinkedQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(ConcurrentLinkedQueueProcessor.class);
 
 
-    @Param({"1", "2", "4", "8"})
+    @Param({"1", "2", "4"})
     public int numReaders;
 
-    @Param({"1", "2", "4", "8"})
+    @Param({"1", "2", "4"})
     public int numWriters;
 
 
     public static void main(String[] args) throws IOException {
         //run from commandline
-        //
+        //java -jar target/benchmarks.jar com.koqonut.concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue
         org.openjdk.jmh.Main.main(args);
 
     }
@@ -35,11 +35,10 @@ public class ConcurrentLinkedQueueProcessor {
     @Warmup(iterations = 1)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 1)
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_clq.log:time,level,tags", "-Xms4g", "-Xmx4g"})
     public void benchmarkConcurrentLinkedQueue() throws ExecutionException, InterruptedException {
 
 
-        //java -jar target/benchmarks.jar com.koqonut.concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue
         StringBuilder sb = new StringBuilder();
         MyFileWriter.printToFile(Constants.PERF_LQ, "ConcurrentLinkedQueue Start time " + new Date());
         sb.append("records, qSize, numReaders, numWriters, Duration(ms)");

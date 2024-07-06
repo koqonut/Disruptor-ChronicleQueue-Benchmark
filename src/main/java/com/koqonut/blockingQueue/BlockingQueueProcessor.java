@@ -17,14 +17,14 @@ public class BlockingQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(BlockingQueueProcessor.class);
 
 
-    @Param({"1", "2", "4", "8"})
+    @Param({"1", "2", "4"})
     public int numReaders;
 
-    @Param({"1", "2", "4", "8"})
+    @Param({"1", "2", "4"})
     public int numWriters;
 
 
-    @Param({"100000", "1000000"})
+    @Param({"16384", "131072", "1048576"})
     public int queueSize;
 
 
@@ -37,7 +37,7 @@ public class BlockingQueueProcessor {
     @Warmup(iterations = 1)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 1)
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_bq.log:time,level,tags", "-Xms4g", "-Xmx4g"})
     public void benchmarkBlockingQueue() throws ExecutionException, InterruptedException {
 
         StringBuilder sb = new StringBuilder();

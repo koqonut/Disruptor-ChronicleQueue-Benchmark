@@ -21,20 +21,22 @@ import java.util.concurrent.*;
 public class InputProcessor {
     private static final int COUNT = Constants.RECORDS_TO_READ;
     private static final Logger logger = LoggerFactory.getLogger(InputProcessor.class);
-    private static final boolean shouldJournal = false;
 
-    @Param({"4096", "8192", "16384", "32768", "65536"})
+    @Param({"8192", "16384", "32768", "131072", "524288", "1048576"})
     public int ringBufferSize;
+
+    @Param({"true","false"})
+    public boolean shouldJournal;
 
     public static void main(String[] args) throws IOException {
         // org.openjdk.jmh.Main.main(args);
     }
 
     @Benchmark
-    @Warmup(iterations = 1)
+    @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 1)
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_d.log:time,level,tags", "-Xms4g", "-Xmx4g"})
     public void benchmarkDisruptor() throws ExecutionException, InterruptedException {
         MyFileWriter.printToFile(Constants.PERF_D, "-------------" + ringBufferSize + "-----------");
 
@@ -45,9 +47,9 @@ public class InputProcessor {
         CQWriter inputJournaler = new CQWriter(Constants.CQ_INPUT_PATH);
         CQWriter outputJournaler = new CQWriter(Constants.CQ_BL_PATH);
 
-        ThreadFactory outputThreadFactory = r -> new Thread(r, "Out_Thread");
+        ThreadFactory outputThreadFactory = r -> new Thread(r, "OUT");
 
-        ThreadFactory inputThreadFactory = r -> new Thread(r, "In_Thread");
+        ThreadFactory inputThreadFactory = r -> new Thread(r, "IN");
 
         ExecutorService executor = Executors.newFixedThreadPool(1, inputThreadFactory);
 
@@ -81,7 +83,7 @@ public class InputProcessor {
         MyFileWriter.printToFile(Constants.PERF_D, sb.toString());
 
         // Shutdown
-        logger.info("End  time {}", System.currentTimeMillis());
+        logger.info("End time {}", System.currentTimeMillis());
         MyFileWriter.printToFile(Constants.PERF_D, "Main duration " + duration);
 
 

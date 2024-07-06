@@ -7,9 +7,9 @@ public class Constants {
     public static String CSV_INPUT_100M = "src/main/data/measurements_100M.txt";
     public static String CSV_INPUT_1B = "src/main/data/measurements_1B.txt";
 
-    public static final int RECORDS_TO_READ = RECORDS_TO_READ_1M;
-    public static final int LOG_DISPLAYER = 100_000;
-    public static String CSV_INPUT_FILEPATH = CSV_INPUT_1M;
+    public static final int RECORDS_TO_READ = RECORDS_TO_READ_1B;
+    public static final int LOG_DISPLAYER = 10_000_000;
+    public static String CSV_INPUT_FILEPATH = CSV_INPUT_1B;
 
     public static String PERF_Q = "out/perf_q.txt";
     public static String PERF_LQ = "out/perf_lq.txt";

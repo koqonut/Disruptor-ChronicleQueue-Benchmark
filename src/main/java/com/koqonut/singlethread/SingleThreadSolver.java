@@ -54,7 +54,7 @@ public class SingleThreadSolver {
     @Warmup(iterations = 1)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 1)
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_single.log:time,level,tags", "-Xms4g", "-Xmx4g"})
     public void process() throws IOException {
         MyFileWriter.printToFile(Constants.PERF_S, "------------------------------");
 
