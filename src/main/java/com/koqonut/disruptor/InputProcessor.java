@@ -30,7 +30,7 @@ public class InputProcessor {
         // org.openjdk.jmh.Main.main(args);
     }
 
-    //@Benchmark
+    @Benchmark
     @Warmup(iterations = 1)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)

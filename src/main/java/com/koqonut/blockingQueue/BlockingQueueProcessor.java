@@ -33,7 +33,7 @@ public class BlockingQueueProcessor {
 
     }
 
-    //@Benchmark
+    @Benchmark
     @Warmup(iterations = 1)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)

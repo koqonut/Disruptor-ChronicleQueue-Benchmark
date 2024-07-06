@@ -50,7 +50,7 @@ public class SingleThreadSolver {
         singleThreadSolver = new SingleThreadSolver();
     }
 
-    //@Benchmark
+    @Benchmark
     @Warmup(iterations = 1)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
