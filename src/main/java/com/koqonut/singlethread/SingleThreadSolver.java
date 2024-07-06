@@ -35,16 +35,14 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class SingleThreadSolver {
 
-
-    private static final String FILE = Constants.CSV_INPUT_1M;
+    private static final String FILE = Constants.CSV_INPUT_FILEPATH;
     private static final Logger logger = LoggerFactory.getLogger(SingleThreadSolver.class);
 
     SingleThreadSolver singleThreadSolver;
 
 
     public static void main(String[] args) throws Exception {
-        org.openjdk.jmh.Main.main(args);
-
+        //org.openjdk.jmh.Main.main(args);
     }
 
     @Setup
@@ -52,10 +50,10 @@ public class SingleThreadSolver {
         singleThreadSolver = new SingleThreadSolver();
     }
 
-    @Benchmark
+    //@Benchmark
     @Warmup(iterations = 1)
     @Measurement(iterations = 1)
-    @BenchmarkMode(Mode.All)
+    @BenchmarkMode(Mode.AverageTime)
     @Fork(value = 1, warmups = 1)
     public void process() throws IOException {
         MyFileWriter.printToFile(Constants.PERF_S, "------------------------------");
@@ -86,8 +84,6 @@ public class SingleThreadSolver {
                 sumTemp.put(city, sumTemp.getOrDefault(city, 0.0) + temperature);
                 count++;
             }
-
-
         }
 
         for (Map.Entry<String, Double> e : maxTemp.entrySet()) {
@@ -97,8 +93,7 @@ public class SingleThreadSolver {
             double max = Math.round(e.getValue() * 100.0 / 100.0);
 
             StringBuilder sb = new StringBuilder();
-            sb.append(city).append(':').append(min).append('/').append(avg)
-                    .append('/').append(max).append(';');
+            sb.append(city).append(':').append(min).append('/').append(avg).append('/').append(max).append(';');
             MyFileWriter.printToFile(Constants.CSV_OUTPUT_SINGLE, sb.toString());
 
         }

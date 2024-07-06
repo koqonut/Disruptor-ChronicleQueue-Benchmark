@@ -1,4 +1,4 @@
-package com.koqonut.queue;
+package com.koqonut.blockingQueue;
 
 import com.koqonut.Constants;
 import org.slf4j.Logger;

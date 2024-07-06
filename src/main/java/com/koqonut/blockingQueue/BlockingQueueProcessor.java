@@ -1,4 +1,4 @@
-package com.koqonut.queue;
+package com.koqonut.blockingQueue;
 
 import com.koqonut.Constants;
 import com.koqonut.file.MyFileWriter;
@@ -29,14 +29,14 @@ public class BlockingQueueProcessor {
 
 
     public static void main(String[] args) throws IOException {
-        org.openjdk.jmh.Main.main(args);
+        // org.openjdk.jmh.Main.main(args);
 
     }
 
-    @Benchmark
+    //@Benchmark
     @Warmup(iterations = 1)
     @Measurement(iterations = 1)
-    @BenchmarkMode(Mode.All)
+    @BenchmarkMode(Mode.AverageTime)
     @Fork(value = 1, warmups = 1)
     public void benchmarkBlockingQueue() throws ExecutionException, InterruptedException {
 
@@ -53,8 +53,8 @@ public class BlockingQueueProcessor {
         long startTime = System.currentTimeMillis();
 
         // Start producer and consumer threads
-        Future<Boolean> res1 = producer.submit(new Producer(queue, Constants.CSV_INPUT_1M, Constants.RECORDS_TO_READ_1M));
-        Future<Boolean> res2 = consumer.submit(new Consumer(queue, Constants.RECORDS_TO_READ_1M));
+        Future<Boolean> res1 = producer.submit(new Producer(queue, Constants.CSV_INPUT_FILEPATH, Constants.RECORDS_TO_READ));
+        Future<Boolean> res2 = consumer.submit(new Consumer(queue, Constants.RECORDS_TO_READ));
 
         res1.get();
         res2.get();
@@ -64,13 +64,9 @@ public class BlockingQueueProcessor {
         consumer.shutdown();
 
         long duration = System.currentTimeMillis() - startTime;
-        logger.info("Processed {} records in {} milliseconds", Constants.RECORDS_TO_READ_1M, duration);
+        logger.info("Processed {} records in {} milliseconds", Constants.RECORDS_TO_READ, duration);
         sb = new StringBuilder();
-        sb.append(Constants.RECORDS_TO_READ_1M).append(',')
-                .append(queueSize).append(',')
-                .append(numReaders).append(',')
-                .append(numWriters).append(',')
-                .append(duration).append(',');
+        sb.append(Constants.RECORDS_TO_READ).append(',').append(queueSize).append(',').append(numReaders).append(',').append(numWriters).append(',').append(duration).append(',');
 
         MyFileWriter.printToFile(Constants.PERF_Q, sb.toString());
         MyFileWriter.printToFile(Constants.PERF_Q, "Total time taken in milliseconds " + duration);

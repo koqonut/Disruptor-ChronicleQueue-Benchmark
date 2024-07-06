@@ -19,33 +19,28 @@ import java.util.concurrent.*;
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class InputProcessor {
-    private static final int COUNT = Constants.RECORDS_TO_READ_1M;
+    private static final int COUNT = Constants.RECORDS_TO_READ;
     private static final Logger logger = LoggerFactory.getLogger(InputProcessor.class);
-
+    private static final boolean shouldJournal = false;
 
     @Param({"4096", "8192", "16384", "32768", "65536"})
     public int ringBufferSize;
 
     public static void main(String[] args) throws IOException {
-        org.openjdk.jmh.Main.main(args);
+        // org.openjdk.jmh.Main.main(args);
     }
 
-    @Benchmark
+    //@Benchmark
     @Warmup(iterations = 1)
     @Measurement(iterations = 1)
-    @BenchmarkMode(Mode.All)
+    @BenchmarkMode(Mode.AverageTime)
     @Fork(value = 1, warmups = 1)
     public void benchmarkDisruptor() throws ExecutionException, InterruptedException {
         MyFileWriter.printToFile(Constants.PERF_D, "-------------" + ringBufferSize + "-----------");
 
         // Executor to handle threads
         // Define a ThreadFactory to create threads for disruptor
-        ThreadFactory businessLogicThreadFactory = new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "BL_Thread");
-            }
-        };
+        ThreadFactory businessLogicThreadFactory = r -> new Thread(r, "BL_Thread");
 
         CQWriter inputJournaler = new CQWriter(Constants.CQ_INPUT_PATH);
         CQWriter outputJournaler = new CQWriter(Constants.CQ_BL_PATH);
@@ -64,7 +59,7 @@ public class InputProcessor {
                 ringBufferSize, outputThreadFactory);
 
         // Connect disruptors
-        inputDisruptor.handleEventsWith(new BusinessLogicProcessor(outputDisruptor.getRingBuffer(), Constants.PERF_D, false, outputJournaler));
+        inputDisruptor.handleEventsWith(new BusinessLogicProcessor(outputDisruptor.getRingBuffer(), Constants.PERF_D, shouldJournal, outputJournaler));
         outputDisruptor.handleEventsWith(new OutputProcessor(Constants.CSV_OUTPUT_DIS, Constants.PERF_D));
 
         // Start disruptors
@@ -75,11 +70,9 @@ public class InputProcessor {
         long startTime = System.currentTimeMillis();
         logger.info("Start time {}", System.currentTimeMillis());
         // Read from file and publish to input disruptor
-        Future<Boolean> done = executor.submit(new MyFileReader(inputDisruptor, Constants.CSV_INPUT_1M, COUNT, false, inputJournaler));
+        Future<Boolean> done = executor.submit(new MyFileReader(inputDisruptor, Constants.CSV_INPUT_FILEPATH, COUNT, shouldJournal, inputJournaler));
 
-        if (done.get()) {
-            // Wait for processing to complete
-        }
+        done.get();
         long duration = System.currentTimeMillis() - startTime;
         StringBuilder sb = new StringBuilder();
         sb.append(ringBufferSize).append(',')

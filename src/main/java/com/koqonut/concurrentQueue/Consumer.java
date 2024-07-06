@@ -1,4 +1,4 @@
-package com.koqonut.queue;
+package com.koqonut.concurrentQueue;
 
 import com.koqonut.Constants;
 import com.koqonut.file.MyFileWriter;
@@ -6,15 +6,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Consumer implements Callable<Boolean> {
     private static final Logger logger = LoggerFactory.getLogger(Consumer.class);
-    private final ArrayBlockingQueue<String> queue;
+    private final ConcurrentLinkedQueue<String> queue;
     private final ConcurrentSkipListMap<String, Double> maxTemp = new ConcurrentSkipListMap<>();
     private final ConcurrentHashMap<String, Double> minTemp = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Double> sumTemp = new ConcurrentHashMap<>();
@@ -23,7 +23,7 @@ public class Consumer implements Callable<Boolean> {
     private final AtomicLong recordCount;
 
 
-    public Consumer(ArrayBlockingQueue<String> queue, long numRecords) {
+    public Consumer(ConcurrentLinkedQueue<String> queue, long numRecords) {
         this.queue = queue;
         this.recordCount = new AtomicLong(numRecords);
     }
@@ -31,32 +31,31 @@ public class Consumer implements Callable<Boolean> {
     @Override
     public Boolean call() {
         logger.info("Started consumer to read {} records", recordCount.get());
-        while (recordCount.getAndDecrement() > 0) {
+        while (true) {
             //logger.info("Count is {}", count.get());
 
             if (recordCount.get() % (Constants.LOG_DISPLAYER) == 0) {
                 logger.info("Consumer processed {} records", recordCount.get());
             }
+            String data = queue.poll();
+            if (data != null) {
+                recordCount.getAndDecrement();
+                // Parse data (assuming format: city;temperature)
+                String[] parts = data.split(";");
+                String city = parts[0].trim();
+                double temperature = Double.parseDouble(parts[1].trim());
 
-            String data;
-            try {
-                data = queue.take();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                maxTemp.put(city, Math.max(maxTemp.getOrDefault(city, Double.MIN_VALUE), temperature));
+                minTemp.put(city, Math.min(minTemp.getOrDefault(city, Double.MAX_VALUE), temperature));
+                countTemp.put(city, countTemp.getOrDefault(city, 0L) + 1);
+                sumTemp.put(city, sumTemp.getOrDefault(city, 0.0) + temperature);
+                if (recordCount.get() == 0) {
+                    break;
+                }
             }
-
-            // Parse data (assuming format: city;temperature)
-            String[] parts = data.split(";");
-            String city = parts[0].trim();
-            double temperature = Double.parseDouble(parts[1].trim());
-
-            maxTemp.put(city, Math.max(maxTemp.getOrDefault(city, Double.MIN_VALUE), temperature));
-            minTemp.put(city, Math.min(minTemp.getOrDefault(city, Double.MAX_VALUE), temperature));
-            countTemp.put(city, countTemp.getOrDefault(city, 0L) + 1);
-            sumTemp.put(city, sumTemp.getOrDefault(city, 0.0) + temperature);
         }
 
-        logger.info("Queue processed {} ", Constants.RECORDS_TO_READ_1M);
+        logger.info("Queue processed {} ", Constants.RECORDS_TO_READ);
 
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Double> e : maxTemp.entrySet()) {
