@@ -17,19 +17,20 @@ public class BlockingQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(BlockingQueueProcessor.class);
 
 
-    @Param({"1", "2", "4"})
+    @Param({"1", "4"})
     public int numReaders;
 
-    @Param({"1", "2", "4"})
+    @Param({"1", "4"})
     public int numWriters;
 
 
-    @Param({"8192","32768", "131072", "1048576"})
+    @Param({"8192", "131072", "1048576"})
     public int queueSize;
 
 
     public static void main(String[] args) throws IOException {
         // org.openjdk.jmh.Main.main(args);
+        //java -jar target/Chronicle-Queue-1.0-SNAPSHOT.jar com.koqonut.blockingQueue.BlockingQueueProcessor -o out/benchmark/bq_8g.txt
 
     }
 
@@ -37,7 +38,7 @@ public class BlockingQueueProcessor {
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_bq.log:time,level,tags","-Xms4g","-Xmx4g","-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_bq.log:time,level,tags","-Xms16g","-Xmx16g","-XX:+UseStringDeduplication"})
     public void benchmarkBlockingQueue() throws ExecutionException, InterruptedException {
 
         StringBuilder sb = new StringBuilder();
