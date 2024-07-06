@@ -41,7 +41,8 @@ public class SingleThreadSolver {
     SingleThreadSolver singleThreadSolver;
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
+        //com.koqonut.singlethread.SingleThreadSolver.process
         //org.openjdk.jmh.Main.main(args);
     }
 
@@ -51,10 +52,10 @@ public class SingleThreadSolver {
     }
 
     @Benchmark
-    @Warmup(iterations = 1)
+    @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_single.log:time,level,tags", "-Xms4g", "-Xmx4g"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_single.log:time,level,tags", "-Xms8g", "-Xmx8g", "-XX:+UseStringDeduplication"})
     public void process() throws IOException {
         MyFileWriter.printToFile(Constants.PERF_S, "------------------------------");
 

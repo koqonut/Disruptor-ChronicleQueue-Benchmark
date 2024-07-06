@@ -16,7 +16,6 @@ import java.util.concurrent.*;
 public class ConcurrentLinkedQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(ConcurrentLinkedQueueProcessor.class);
 
-
     @Param({"1", "2", "4"})
     public int numReaders;
 
@@ -32,10 +31,10 @@ public class ConcurrentLinkedQueueProcessor {
     }
 
     @Benchmark
-    @Warmup(iterations = 1)
+    @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_clq.log:time,level,tags", "-Xms4g", "-Xmx4g"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_clq.log:time,level,tags", "-Xms8g", "-Xmx8g","-XX:+UseStringDeduplication"})
     public void benchmarkConcurrentLinkedQueue() throws ExecutionException, InterruptedException {
 
 

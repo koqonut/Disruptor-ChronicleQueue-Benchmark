@@ -22,7 +22,7 @@ public class InputProcessor {
     private static final int COUNT = Constants.RECORDS_TO_READ;
     private static final Logger logger = LoggerFactory.getLogger(InputProcessor.class);
 
-    @Param({"8192", "16384", "32768", "131072", "524288", "1048576"})
+    @Param({"8192", "16384", "32768", "131072", "524288"})
     public int ringBufferSize;
 
     @Param({"true","false"})
@@ -36,13 +36,13 @@ public class InputProcessor {
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_d.log:time,level,tags", "-Xms4g", "-Xmx4g"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_d.log:time,level,tags", "-Xms8g", "-Xmx8g","-XX:+UseStringDeduplication"})
     public void benchmarkDisruptor() throws ExecutionException, InterruptedException {
         MyFileWriter.printToFile(Constants.PERF_D, "-------------" + ringBufferSize + "-----------");
 
         // Executor to handle threads
         // Define a ThreadFactory to create threads for disruptor
-        ThreadFactory businessLogicThreadFactory = r -> new Thread(r, "BL_Thread");
+        ThreadFactory businessLogicThreadFactory = r -> new Thread(r, "BL");
 
         CQWriter inputJournaler = new CQWriter(Constants.CQ_INPUT_PATH);
         CQWriter outputJournaler = new CQWriter(Constants.CQ_BL_PATH);
