@@ -31,14 +31,16 @@ import java.util.concurrent.TimeUnit;
 public class ConcurrentLinkedQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(ConcurrentLinkedQueueProcessor.class);
 
+
+    @Param({"65536", "131072", "262144"})
+    public int queueSize;
+
     @Param({"1", "4"})
     public int numReaders;
 
     @Param({"1", "4"})
     public int numWriters;
 
-    @Param({"8192", "16384", "32768", "131072"})
-    int maxSize;
 
     public static void main(String[] args) throws IOException {
         //run from commandline
@@ -59,7 +61,7 @@ public class ConcurrentLinkedQueueProcessor {
         MyFileWriter.printToFile(Constants.PERF_LQ, "ConcurrentLinkedQueue Start time " + new Date());
         sb.append("records, qSize, numReaders, numWriters, Duration(ms)");
         MyFileWriter.printToFile(Constants.PERF_LQ, sb.toString());
-        final Semaphore semaphore = new Semaphore(maxSize);
+        final Semaphore semaphore = new Semaphore(queueSize);
 
         ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>();
         ExecutorService producer = Executors.newFixedThreadPool(numReaders); // Create a thread pool with 2 threads

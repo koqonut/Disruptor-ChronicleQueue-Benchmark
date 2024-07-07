@@ -31,15 +31,14 @@ public class BlockingQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(BlockingQueueProcessor.class);
 
 
+    @Param({"65536", "131072", "262144"})
+    public int queueSize;
+
     @Param({"1", "4"})
     public int numReaders;
 
     @Param({"1", "4"})
     public int numWriters;
-
-
-    @Param({"8192", "16384", "32768", "131072"})
-    public int queueSize;
 
 
     public static void main(String[] args) throws IOException {
