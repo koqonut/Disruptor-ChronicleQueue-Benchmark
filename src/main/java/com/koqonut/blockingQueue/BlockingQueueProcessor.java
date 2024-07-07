@@ -30,16 +30,14 @@ import java.util.concurrent.TimeUnit;
 public class BlockingQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(BlockingQueueProcessor.class);
 
+    @Param({"1048576"})
+    public int queueSize;
 
-    @Param({"1", "4"})
+    @Param({"4"})
     public int numReaders;
 
-    @Param({"1", "4"})
+    @Param({"4"})
     public int numWriters;
-
-
-    @Param({"4096", "8192", "32768", "65536", "131072"})
-    public int queueSize;
 
 
     public static void main(String[] args) throws IOException {
@@ -48,10 +46,10 @@ public class BlockingQueueProcessor {
     }
 
     @Benchmark
-    @Warmup(iterations = 1)
-    @Measurement(iterations = 2)
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_bq.log:time,level,tags", "-Xms4g", "-Xmx4g", "-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_s_1B.log:time,level,tags", "-Xms4g", "-Xmx4g", "-XX:+UseStringDeduplication"})
     public void benchmarkBlockingQueue() throws ExecutionException, InterruptedException {
 
         StringBuilder sb = new StringBuilder();

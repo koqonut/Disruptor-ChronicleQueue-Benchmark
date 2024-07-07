@@ -31,14 +31,15 @@ import java.util.concurrent.TimeUnit;
 public class ConcurrentLinkedQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(ConcurrentLinkedQueueProcessor.class);
 
-    @Param({"1", "4"})
+    @Param({"1048576"})
+    public int queueSize;
+
+    @Param({"4"})
     public int numReaders;
 
-    @Param({"1", "4"})
+    @Param({"4"})
     public int numWriters;
 
-    @Param({"4096", "8192", "32768", "65536", "131072"})
-    int maxSize;
 
     public static void main(String[] args) throws IOException {
         //run from commandline
@@ -48,10 +49,10 @@ public class ConcurrentLinkedQueueProcessor {
     }
 
     @Benchmark
-    @Warmup(iterations = 1)
-    @Measurement(iterations = 2)
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_clq.log:time,level,tags", "-Xms4g", "-Xmx4g", "-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_s_1B.log:time,level,tags", "-Xms4g", "-Xmx4g", "-XX:+UseStringDeduplication"})
     public void benchmarkConcurrentLinkedQueue() throws ExecutionException, InterruptedException {
 
 
@@ -59,7 +60,7 @@ public class ConcurrentLinkedQueueProcessor {
         MyFileWriter.printToFile(Constants.PERF_LQ, "ConcurrentLinkedQueue Start time " + new Date());
         sb.append("records, qSize, numReaders, numWriters, Duration(ms)");
         MyFileWriter.printToFile(Constants.PERF_LQ, sb.toString());
-        final Semaphore semaphore = new Semaphore(maxSize);
+        final Semaphore semaphore = new Semaphore(queueSize);
 
         ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>();
         ExecutorService producer = Executors.newFixedThreadPool(numReaders); // Create a thread pool with 2 threads

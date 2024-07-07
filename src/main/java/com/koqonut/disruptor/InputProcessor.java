@@ -36,7 +36,7 @@ public class InputProcessor {
     private static final int COUNT = Constants.RECORDS_TO_READ;
     private static final Logger logger = LoggerFactory.getLogger(InputProcessor.class);
 
-    @Param({"8192", "32768", "65536", "131072", "262144"})
+    @Param({"131072"})
     public int ringBufferSize;
 
     @Param({"false"})
@@ -48,10 +48,10 @@ public class InputProcessor {
     }
 
     @Benchmark
-    @Warmup(iterations = 1)
-    @Measurement(iterations = 2)
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_d.log:time,level,tags", "-Xms4g", "-Xmx4g", "-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_s_1B.log:time,level,tags", "-Xms4g", "-Xmx4g", "-XX:+UseStringDeduplication"})
     public void benchmarkDisruptor() throws ExecutionException, InterruptedException {
         MyFileWriter.printToFile(Constants.PERF_D, "-------------" + ringBufferSize + "-----------");
 
