@@ -36,7 +36,7 @@ public class InputProcessor {
     private static final int COUNT = Constants.RECORDS_TO_READ;
     private static final Logger logger = LoggerFactory.getLogger(InputProcessor.class);
 
-    @Param({"16384", "32768", "131072", "262144", "524288", "1048576"})
+    @Param({"262144", "524288"})
     public int ringBufferSize;
 
     @Param({"false"})

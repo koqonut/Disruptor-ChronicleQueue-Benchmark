@@ -31,10 +31,10 @@ public class BlockingQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(BlockingQueueProcessor.class);
 
 
-    @Param({"65536", "131072", "262144", "524288", "1048576"})
+    @Param({"524288", "1048576"})
     public int queueSize;
 
-    @Param({"1", "4"})
+    @Param({"4"})
     public int numReaders;
 
     @Param({"1", "4"})
