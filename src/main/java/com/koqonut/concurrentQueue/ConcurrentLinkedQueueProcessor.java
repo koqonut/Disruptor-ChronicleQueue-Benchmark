@@ -37,7 +37,7 @@ public class ConcurrentLinkedQueueProcessor {
     @Param({"1", "4"})
     public int numWriters;
 
-    @Param({"8192", "131072", "1048576", "8388608"})
+    @Param({"4096", "8192", "32768"})
     int maxSize;
 
     public static void main(String[] args) throws IOException {
@@ -51,7 +51,7 @@ public class ConcurrentLinkedQueueProcessor {
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_clq.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_clq.log:time,level,tags", "-Xms4g", "-Xmx4g", "-XX:+UseStringDeduplication"})
     public void benchmarkConcurrentLinkedQueue() throws ExecutionException, InterruptedException {
 
 

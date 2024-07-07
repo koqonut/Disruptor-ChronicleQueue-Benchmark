@@ -2,13 +2,27 @@ package com.koqonut.blockingQueue;
 
 import com.koqonut.Constants;
 import com.koqonut.file.MyFileWriter;
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Warmup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 
 @State(Scope.Benchmark)
@@ -24,21 +38,20 @@ public class BlockingQueueProcessor {
     public int numWriters;
 
 
-    @Param({"8192", "131072", "1048576"})
+    @Param({"4096", "8192", "32768"})
     public int queueSize;
 
 
     public static void main(String[] args) throws IOException {
         // org.openjdk.jmh.Main.main(args);
         //java -jar target/Chronicle-Queue-1.0-SNAPSHOT.jar com.koqonut.blockingQueue.BlockingQueueProcessor -o out/benchmark/bq_8g.txt
-
     }
 
     @Benchmark
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_bq.log:time,level,tags","-Xms16g","-Xmx16g","-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_bq.log:time,level,tags", "-Xms4g", "-Xmx4g", "-XX:+UseStringDeduplication"})
     public void benchmarkBlockingQueue() throws ExecutionException, InterruptedException {
 
         StringBuilder sb = new StringBuilder();
