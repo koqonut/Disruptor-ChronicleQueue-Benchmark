@@ -17,7 +17,16 @@ package com.koqonut.singlethread;
 
 import com.koqonut.Constants;
 import com.koqonut.file.MyFileWriter;
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Warmup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,10 +61,10 @@ public class SingleThreadSolver {
     }
 
     @Benchmark
-    @Warmup(iterations = 0)
-    @Measurement(iterations = 1)
+    @Warmup(iterations = 1)
+    @Measurement(iterations = 2)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_single.log:time,level,tags","-Xms16g","-Xmx16g", "-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_single.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
     public void process() throws IOException {
         // "-Xms8g", "-Xmx8g"
         MyFileWriter.printToFile(Constants.PERF_S, "------------------------------");

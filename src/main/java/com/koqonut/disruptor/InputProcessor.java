@@ -9,12 +9,26 @@ import com.koqonut.file.MyFileWriter;
 import com.koqonut.model.CityStatisticsEvent;
 import com.koqonut.model.CityTemperatureEvent;
 import com.lmax.disruptor.dsl.Disruptor;
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Warmup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -22,7 +36,7 @@ public class InputProcessor {
     private static final int COUNT = Constants.RECORDS_TO_READ;
     private static final Logger logger = LoggerFactory.getLogger(InputProcessor.class);
 
-    @Param({"8192","32768", "131072", "1048576"})
+    @Param({"8192", "16384", "32768", "131072", "1048576"})
     public int ringBufferSize;
 
     @Param({"false"})
@@ -34,10 +48,10 @@ public class InputProcessor {
     }
 
     @Benchmark
-    @Warmup(iterations = 0)
-    @Measurement(iterations = 1)
+    @Warmup(iterations = 1)
+    @Measurement(iterations = 2)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_d.log:time,level,tags","-Xms16g","-Xmx16g","-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_d.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
     public void benchmarkDisruptor() throws ExecutionException, InterruptedException {
         MyFileWriter.printToFile(Constants.PERF_D, "-------------" + ringBufferSize + "-----------");
 
