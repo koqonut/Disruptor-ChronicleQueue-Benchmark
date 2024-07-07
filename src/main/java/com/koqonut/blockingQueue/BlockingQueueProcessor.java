@@ -31,7 +31,7 @@ public class BlockingQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(BlockingQueueProcessor.class);
 
 
-    @Param({"524288", "1048576"})
+    @Param({"1048576"})
     public int queueSize;
 
     @Param({"4"})
@@ -48,10 +48,10 @@ public class BlockingQueueProcessor {
     }
 
     @Benchmark
-    @Warmup(iterations = 1)
-    @Measurement(iterations = 2)
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_bq.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_bq_16g.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
     public void benchmarkBlockingQueue() throws ExecutionException, InterruptedException {
         MyFileWriter.printToFile(Constants.PERF_Q, "-------" + queueSize + "-------" + Constants.RECORDS_TO_READ);
 
