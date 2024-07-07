@@ -59,11 +59,12 @@ class BusinessLogicProcessor implements EventHandler<CityTemperatureEvent> {
                 cityStatsEvent.setMinTemperature(0.0);
                 cityStatsEvent.setMaxTemperature(0.0);
                 cityStatsEvent.setSumTemperature(0.0);
+                if (shouldJournal) {
+                    outputJournaler.write(cityStatsEvent.toString());
+                }
             } finally {
                 outputRingBuffer.publish(outputSequence);
-                if (shouldJournal) {
-                    outputJournaler.write(city, temperature);
-                }
+
             }
             long end = System.currentTimeMillis();
             long duration = end - startTime;
@@ -89,11 +90,12 @@ class BusinessLogicProcessor implements EventHandler<CityTemperatureEvent> {
                 cityStatsEvent.setMaxTemperature(maxTemp.get(city));
                 cityStatsEvent.setSumTemperature(sumTemp.get(city));
                 cityStatsEvent.setNumOfReadings(countMap.get(city));
+                if (shouldJournal) {
+                    outputJournaler.write(cityStatsEvent.toString());
+                }
             } finally {
                 outputRingBuffer.publish(outputSequence);
-                if (shouldJournal) {
-                    outputJournaler.write(city, temperature);
-                }
+
             }
         }
     }
