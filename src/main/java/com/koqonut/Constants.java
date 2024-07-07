@@ -24,8 +24,8 @@ public class Constants {
     //public static String CSV_INPUT_FILEPATH = CSV_INPUT_100M;
 
 
-    public static final int RECORDS_TO_READ = RECORDS_TO_READ_1M;
-    public static String CSV_INPUT_FILEPATH = CSV_INPUT_1M;
+    public static final int RECORDS_TO_READ = RECORDS_TO_READ_10M;
+    public static String CSV_INPUT_FILEPATH = CSV_INPUT_10M;
 
 
     public static String PERF_Q = "out/perf_q.txt";
