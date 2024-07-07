@@ -56,7 +56,7 @@ public class MyFileReader implements Callable<Boolean> {
                 } finally {
                     inputDisruptor.getRingBuffer().publish(sequence);
                     if (shouldJournal) {
-                        cqWriter.write(city, temperature);
+                        cqWriter.write(line);
                     }
                 }
                 records--;
@@ -75,9 +75,11 @@ public class MyFileReader implements Callable<Boolean> {
             event.setTemperature(0.0);
         } finally {
             inputDisruptor.getRingBuffer().publish(sequence);
-            if (shouldJournal) {
-                cqWriter.write(Constants.EOF, 0.0);
-            }
+
+        }
+        if (shouldJournal) {
+            cqWriter.write(Constants.EOF + ";" + 0.0);
+            cqWriter.close();
         }
         return true;
     }

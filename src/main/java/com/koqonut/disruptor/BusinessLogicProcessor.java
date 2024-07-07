@@ -23,7 +23,7 @@ class BusinessLogicProcessor implements EventHandler<CityTemperatureEvent> {
     private final Map<String, Double> minTemp = new HashMap<>();
     private final Map<String, Double> sumTemp = new HashMap<>();
     private final String perfD;
-    private RingBuffer<CityStatisticsEvent> outputRingBuffer;
+    private final RingBuffer<CityStatisticsEvent> outputRingBuffer;
     private int count = 0;
     private long startTime = 0;
     private final CQWriter outputJournaler;
@@ -53,18 +53,22 @@ class BusinessLogicProcessor implements EventHandler<CityTemperatureEvent> {
         if (Constants.EOF.equals(city)) {
             // Publish to output disruptor
             long outputSequence = outputRingBuffer.next();
+
             try {
                 CityStatisticsEvent cityStatsEvent = outputRingBuffer.get(outputSequence);
                 cityStatsEvent.setCity(Constants.EOF);
                 cityStatsEvent.setMinTemperature(0.0);
                 cityStatsEvent.setMaxTemperature(0.0);
                 cityStatsEvent.setSumTemperature(0.0);
+                if (shouldJournal) {
+                    outputJournaler.write(cityStatsEvent.toString());
+                }
             } finally {
                 outputRingBuffer.publish(outputSequence);
-                if (shouldJournal) {
-                    outputJournaler.write(city, temperature);
-                }
+
             }
+
+
             long end = System.currentTimeMillis();
             long duration = end - startTime;
             logger.info("Total time in BL thread: {} milliseconds", duration);
@@ -89,11 +93,12 @@ class BusinessLogicProcessor implements EventHandler<CityTemperatureEvent> {
                 cityStatsEvent.setMaxTemperature(maxTemp.get(city));
                 cityStatsEvent.setSumTemperature(sumTemp.get(city));
                 cityStatsEvent.setNumOfReadings(countMap.get(city));
+                if (shouldJournal) {
+                    outputJournaler.write(cityStatsEvent.toString());
+                }
             } finally {
                 outputRingBuffer.publish(outputSequence);
-                if (shouldJournal) {
-                    outputJournaler.write(city, temperature);
-                }
+
             }
         }
     }
