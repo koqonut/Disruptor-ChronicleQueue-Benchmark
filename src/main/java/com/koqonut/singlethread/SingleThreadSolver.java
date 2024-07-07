@@ -63,7 +63,8 @@ public class SingleThreadSolver {
     @Benchmark
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
-    @BenchmarkMode(Mode.AverageTime)
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_s_16g.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
     public void process() throws IOException {
         // "-Xms8g", "-Xmx8g"
