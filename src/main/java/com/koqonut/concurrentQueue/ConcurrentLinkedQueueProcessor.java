@@ -32,7 +32,7 @@ public class ConcurrentLinkedQueueProcessor {
     private static final Logger logger = LoggerFactory.getLogger(ConcurrentLinkedQueueProcessor.class);
 
 
-    @Param({"65536", "131072", "262144"})
+    @Param({"65536", "131072", "262144", "524288", "1048576"})
     public int queueSize;
 
     @Param({"1", "4"})
@@ -56,13 +56,13 @@ public class ConcurrentLinkedQueueProcessor {
     @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_clq.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
     public void benchmarkConcurrentLinkedQueue() throws ExecutionException, InterruptedException {
 
+        MyFileWriter.printToFile(Constants.PERF_LQ, "-------" + queueSize + "-------" + Constants.RECORDS_TO_READ);
 
         StringBuilder sb = new StringBuilder();
         MyFileWriter.printToFile(Constants.PERF_LQ, "ConcurrentLinkedQueue Start time " + new Date());
         sb.append("records, qSize, numReaders, numWriters, Duration(ms)");
         MyFileWriter.printToFile(Constants.PERF_LQ, sb.toString());
         final Semaphore semaphore = new Semaphore(queueSize);
-
         ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>();
         ExecutorService producer = Executors.newFixedThreadPool(numReaders); // Create a thread pool with 2 threads
         ExecutorService consumer = Executors.newFixedThreadPool(numWriters); // Create a thread pool with 2 threads

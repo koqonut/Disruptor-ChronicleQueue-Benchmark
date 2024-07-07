@@ -36,7 +36,7 @@ public class InputProcessor {
     private static final int COUNT = Constants.RECORDS_TO_READ;
     private static final Logger logger = LoggerFactory.getLogger(InputProcessor.class);
 
-    @Param({"16384", "32768", "131072"})
+    @Param({"16384", "32768", "131072", "262144", "524288", "1048576"})
     public int ringBufferSize;
 
     @Param({"false"})
@@ -53,7 +53,7 @@ public class InputProcessor {
     @BenchmarkMode(Mode.AverageTime)
     @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_d.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
     public void benchmarkDisruptor() throws ExecutionException, InterruptedException {
-        MyFileWriter.printToFile(Constants.PERF_D, "-------------" + ringBufferSize + "-----------");
+        MyFileWriter.printToFile(Constants.PERF_D, "-------" + ringBufferSize + "-------" + Constants.RECORDS_TO_READ);
 
         // Executor to handle threads
         // Define a ThreadFactory to create threads for disruptor
