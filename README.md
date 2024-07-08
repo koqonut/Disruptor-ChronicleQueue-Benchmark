@@ -97,11 +97,11 @@ singlethread.SingleThreadSolver.process N/A N/A N/A N/A N/A avgt 765399.803 ms/o
 
 ```
 
-|Benchmark | (numReaders)    | (numWriters) |    (queueSize)    | (ringBufferSize)        | Avg time Score    (ms/op)|
-
-|BlockingQueue | 4 | 1 | 1048576 | N/A | 1823453.569 ms/op |
-|BlockingQueue | 4 | 4 | 1048576 | N/A | 1814973.933 ms/op |
-|ConcurrentLinkedQueue | 4 | 1 | 1048576 | N/A | 1633299.596 ms/op |
-|ConcurrentLinkedQueue | 4 | 4 | 1048576 | N/A | 1521605.2 ms/op |
-|Disruptor | N/A | N/A | N/A | 131072 | 707242.338 ms/op |
-|Single Thread | N/A | N/A | N/A | N/A | 765399.803 ms/op |
+|Benchmark                   | (numReaders) | (numWriters) |   (queueSize)  | (ringBufferSize)  | Avg time Score (ms/op)|
+|:--------------------------:|:------------:|-------------:|:--------------:|:-----------------:|----------------------:|
+|BlockingQueue               |     4        |   1          |    1048576     |      N/A          |   1823453.569 ms/op   |
+|BlockingQueue               |     4        |   4          |    1048576     |      N/A          |   1814973.933 ms/op   |
+|ConcurrentLinkedQueue       |     4        |   1          |    1048576     |      N/A          |   1633299.596 ms/op   |
+|ConcurrentLinkedQueue       |     4        |   4          |    1048576     |      N/A          |   1521605.2   ms/op   |
+|Disruptor                   |     N/A      |   N/A        |       N/A      |      131072       |   707242.338  ms/op   |
+|Singlethread                |     N/A      |   N/A        |        N/A     |      N/A          |   765399.803  ms/op   |
