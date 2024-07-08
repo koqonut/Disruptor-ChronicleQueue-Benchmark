@@ -37,7 +37,7 @@ public class BlockingQueueProcessor {
     @Param({"4"})
     public int numReaders;
 
-    @Param({"1", "4"})
+    @Param({"1", "4", "8", "16"})
     public int numWriters;
 
 
@@ -48,8 +48,8 @@ public class BlockingQueueProcessor {
     }
 
     @Benchmark
-    @Warmup(iterations = 1)
-    @Measurement(iterations = 2)
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_bq_16g.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
