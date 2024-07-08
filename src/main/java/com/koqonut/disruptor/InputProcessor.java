@@ -51,7 +51,6 @@ public class InputProcessor {
     @Warmup(iterations = 1)
     @Measurement(iterations = 2)
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_d_16g.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
     public void benchmarkDisruptor() throws ExecutionException, InterruptedException {
         MyFileWriter.printToFile(Constants.PERF_D, "-------" + ringBufferSize + "-------" + Constants.RECORDS_TO_READ);
