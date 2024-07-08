@@ -93,4 +93,15 @@ concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue 4 
 disruptor.InputProcessor.benchmarkDisruptor N/A N/A N/A 131072 false avgt 707242.338 ms/op
 singlethread.SingleThreadSolver.process N/A N/A N/A N/A N/A avgt 765399.803 ms/op
 
+
+
 ```
+
+|Benchmark | (numReaders)    | (numWriters) |    (queueSize)    | (ringBufferSize)        | Avg time Score    (ms/op)|
+
+|BlockingQueue | 4 | 1 | 1048576 | N/A | 1823453.569 ms/op |
+|BlockingQueue | 4 | 4 | 1048576 | N/A | 1814973.933 ms/op |
+|ConcurrentLinkedQueue | 4 | 1 | 1048576 | N/A | 1633299.596 ms/op |
+|ConcurrentLinkedQueue | 4 | 4 | 1048576 | N/A | 1521605.2 ms/op |
+|Disruptor | N/A | N/A | N/A | 131072 | 707242.338 ms/op |
+|Single Thread | N/A | N/A | N/A | N/A | 765399.803 ms/op |
