@@ -39,7 +39,7 @@ public class InputProcessor {
     @Param({"65536", "131072", "262144", "524288",  "1048576", "2097152"})
     public int ringBufferSize;
 
-    @Param({"false"})
+    @Param({"true"})
     public boolean shouldJournal;
 
     public static void main(String[] args) throws IOException {
@@ -48,11 +48,10 @@ public class InputProcessor {
     }
 
     @Benchmark
-    @Warmup(iterations = 1)
-    @Measurement(iterations = 2)
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_d_16g.log:time,level,tags", "-Xms16g", "-Xmx16g", "-XX:+UseStringDeduplication"})
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.All)
+    @Fork(value = 1, warmups = 0, jvmArgsAppend = {"-Xlog:gc*:out/gc_d_16g.log:time,level,tags", "-Xms4g", "-Xmx4g", "-XX:+UseStringDeduplication"})
     public void benchmarkDisruptor() throws ExecutionException, InterruptedException {
         MyFileWriter.printToFile(Constants.PERF_D, "-------" + ringBufferSize + "-------" + Constants.RECORDS_TO_READ);
 
