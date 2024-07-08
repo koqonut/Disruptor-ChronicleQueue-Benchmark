@@ -41,7 +41,7 @@ src/main/data
 Build the 1BRC project using Apache Maven:
 
 ```
-``./mvnw clean verify
+./mvnw clean verify
 
 Create the measurements file with 1B rows (just once):
 ./create_measurements.sh 1000000000
@@ -57,6 +57,7 @@ generation script.
 # Example command to run benchmarks
 
 ```
+
 mvn clean install
 
 # run all test
@@ -66,3 +67,33 @@ java -jar target/Chronicle-Queue-1.0-SNAPSHOT.jar
 java -jar target/Chronicle-Queue-1.0-SNAPSHOT.jar com.koqonut.disruptor.InputProcessor -o out/benchmark/result.txt
 
 ```
+
+# Benchmark results
+
+```
+
+
+
+```
+
+# JMH version: 1.37	ABQ (4R, 1W)    1823453.569
+
+# VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS	ABQ (4R, 4W)    1814973.933
+
+# AWS Instance details t3.2xlarge   8vCPU 	32 GB RAM
+
+32
+
+# VM invoker: /home/ec2-user/.sdkman/candidates/java/21.0.3-amzn/bin/java	CLQ (4R, 1W)    1633299.596    [1048576 queueLimit]
+
+# VM options: -Xlog:gc*:out/gc_bq_16g.log:time,level,tags -Xms16g -Xmx16g -XX:+UseStringDeduplication	CLQ (4R, 4W)    1521605.2    [1048576 queueLimit]
+
+Benchmark                                                                      (numReaders)  (numWriters)  (
+queueSize)  (ringBufferSize)  (shouldJournal)  Mode Cnt Score Error Units
+blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue 4 1 1048576 N/A N/A avgt 1823453.569 ms/op
+blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue 4 4 1048576 N/A N/A avgt 1814973.933 ms/op
+concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue 4 1 1048576 N/A N/A avgt 1633299.596 ms/op
+concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue 4 4 1048576 N/A N/A avgt 1521605.200 ms/op
+disruptor.InputProcessor.benchmarkDisruptor N/A N/A N/A 131072 false avgt 707242.338 ms/op
+singlethread.SingleThreadSolver.process N/A N/A N/A N/A N/A avgt 765399.803 ms/op
+
