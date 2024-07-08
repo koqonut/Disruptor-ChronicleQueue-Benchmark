@@ -105,3 +105,53 @@ singlethread.SingleThreadSolver.process N/A N/A N/A N/A N/A avgt 765399.803 ms/o
 |ConcurrentLinkedQueue       |     4        |   4          |    1048576     |      N/A          |   1521605.2   ms/op   |
 |Disruptor                   |     N/A      |   N/A        |       N/A      |      131072       |   707242.338  ms/op   |
 |Singlethread                |     N/A      |   N/A        |        N/A     |      N/A          |   765399.803  ms/op   |
+
+
+
+Iteration   1: 705563173.097 us/op
+Iteration   2: 936506900.219 us/op
+
+
+Result "com.koqonut.disruptor.InputProcessor.benchmarkDisruptor":
+821035036.658 us/op
+
+
+# Run complete. Total time: 03:32:40
+
+
+Benchmark                          (ringBufferSize)  (shouldJournal)  Mode  Cnt          Score   Error  Units
+InputProcessor.benchmarkDisruptor             65536            false  avgt    2  642222574.400          us/op
+InputProcessor.benchmarkDisruptor            131072            false  avgt    2  672457457.811          us/op
+InputProcessor.benchmarkDisruptor            262144            false  avgt    2  641021406.430          us/op
+InputProcessor.benchmarkDisruptor            524288            false  avgt    2  701570130.256          us/op
+InputProcessor.benchmarkDisruptor           1048576            false  avgt    2  777010755.236          us/op
+InputProcessor.benchmarkDisruptor           2097152            false  avgt    2  821035036.658          us/op
+
+
+
+
+# Run progress: 96.30% complete, ETA 00:08:57
+# Fork: 1 of 1
+Iteration   1: 761912831.567 us/op
+
+
+Result "com.koqonut.singlethread.SingleThreadSolver.process":
+761912831.567 us/op
+
+
+# Run complete. Total time: 04:05:32
+
+
+
+Benchmark                                                                      (numReaders)  (numWriters)  (queueSize)  Mode  Cnt           Score   Error  Units
+blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue                               4             1      1048576  avgt       1847657230.663          us/op
+blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue                               4             4      1048576  avgt       1891556671.612          us/op
+blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue                               4             8      1048576  avgt       1896590471.312          us/op
+blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue                               4            16      1048576  avgt       1893679263.733          us/op
+concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue             4             1      1048576  avgt       1623709735.610          us/op
+concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue             4             4      1048576  avgt       1587018099.355          us/op
+concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue             4             8      1048576  avgt       1582008802.037          us/op
+concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue             4            16      1048576  avgt       1626868889.970          us/op
+singlethread.SingleThreadSolver.process                                                 N/A           N/A          N/A  avgt        761912831.567          us/op
+
+
