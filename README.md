@@ -73,20 +73,16 @@ java -jar target/Chronicle-Queue-1.0-SNAPSHOT.jar com.koqonut.disruptor.InputPro
 ```
 
 
+ JMH version: 1.37	ABQ (4R, 1W)    1823453.569
 
-```
+ VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS	ABQ (4R, 4W)    1814973.933
 
-# JMH version: 1.37	ABQ (4R, 1W)    1823453.569
+ AWS Instance details t3.2xlarge   8vCPU 	32 GB RAM
 
-# VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS	ABQ (4R, 4W)    1814973.933
 
-# AWS Instance details t3.2xlarge   8vCPU 	32 GB RAM
+ VM invoker: /home/ec2-user/.sdkman/candidates/java/21.0.3-amzn/bin/java	CLQ (4R, 1W)    1633299.596    [1048576 queueLimit]
 
-32
-
-# VM invoker: /home/ec2-user/.sdkman/candidates/java/21.0.3-amzn/bin/java	CLQ (4R, 1W)    1633299.596    [1048576 queueLimit]
-
-# VM options: -Xlog:gc*:out/gc_bq_16g.log:time,level,tags -Xms16g -Xmx16g -XX:+UseStringDeduplication	CLQ (4R, 4W)    1521605.2    [1048576 queueLimit]
+ VM options: -Xlog:gc*:out/gc_bq_16g.log:time,level,tags -Xms16g -Xmx16g -XX:+UseStringDeduplication	CLQ (4R, 4W)    1521605.2    [1048576 queueLimit]
 
 Benchmark                                                                      (numReaders)  (numWriters)  (
 queueSize)  (ringBufferSize)  (shouldJournal)  Mode Cnt Score Error Units
@@ -97,3 +93,4 @@ concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue 4 
 disruptor.InputProcessor.benchmarkDisruptor N/A N/A N/A 131072 false avgt 707242.338 ms/op
 singlethread.SingleThreadSolver.process N/A N/A N/A N/A N/A avgt 765399.803 ms/op
 
+```
