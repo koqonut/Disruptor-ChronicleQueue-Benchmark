@@ -40,10 +40,12 @@ src/main/data
 
 Build the 1BRC project using Apache Maven:
 
-./mvnw clean verify
+```
+``./mvnw clean verify
 
 Create the measurements file with 1B rows (just once):
 ./create_measurements.sh 1000000000
+```
 
 Rename the file to measurements_1B.txt and move it src/main/data
 
@@ -54,6 +56,13 @@ generation script.
 
 # Example command to run benchmarks
 
+```
 mvn clean install
+
+# run all test
 java -jar target/Chronicle-Queue-1.0-SNAPSHOT.jar
+
+# run single test
 java -jar target/Chronicle-Queue-1.0-SNAPSHOT.jar com.koqonut.disruptor.InputProcessor -o out/benchmark/result.txt
+
+```
