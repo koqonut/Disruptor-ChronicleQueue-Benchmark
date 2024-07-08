@@ -79,6 +79,7 @@ public class MyFileReader implements Callable<Boolean> {
             }
         } finally {
             inputDisruptor.getRingBuffer().publish(sequence);
+            cqWriter.close();
 
         }
         return true;

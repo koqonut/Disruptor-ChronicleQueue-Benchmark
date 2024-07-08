@@ -1,6 +1,7 @@
 package com.koqonut.disruptor;
 
 import com.koqonut.Constants;
+import com.koqonut.cq.CQWriter;
 import com.koqonut.file.MyFileWriter;
 import com.koqonut.model.CityStatisticsEvent;
 import com.lmax.disruptor.EventHandler;
@@ -18,15 +19,18 @@ class OutputProcessor implements EventHandler<CityStatisticsEvent> {
     private static final Logger logger = LoggerFactory.getLogger(OutputProcessor.class);
     private final String outputFile;
     private final String perfFile;
-
+    private final CQWriter outputJournaler;
     private final TreeMap<String, CityStatisticsEvent> cityStatisticsMap = new TreeMap<>();
     long startTime = 0;
     private int count = 0;
+    private final boolean shouldJournal;
 
-    public OutputProcessor(String outputFile, String perfFile) {
+    public OutputProcessor(String outputFile, String perfFile, CQWriter outputJournaler, boolean shouldJournal) {
         this.outputFile = outputFile;
         this.perfFile = perfFile;
 
+        this.outputJournaler = outputJournaler;
+        this.shouldJournal = shouldJournal;
     }
 
     @Override
@@ -57,10 +61,15 @@ class OutputProcessor implements EventHandler<CityStatisticsEvent> {
             long duration = stopTime - startTime;
             MyFileWriter.printToFile(perfFile, "OL Duration (ms): " + duration + ';');
 
+            outputJournaler.close();
+
             logger.debug("Total time taken by OP_Thread {} milliseconds", (stopTime - startTime));
 
         } else {
             cityStatisticsMap.put(city, cityStatisticsEvent);
+            if(shouldJournal){
+                outputJournaler.write(cityStatisticsEvent.toString());
+            }
 
             if (count == 0) {
                 startTime = System.currentTimeMillis();

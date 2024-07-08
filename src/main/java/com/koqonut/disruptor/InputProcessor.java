@@ -77,8 +77,8 @@ public class InputProcessor {
                 ringBufferSize, outputThreadFactory);
 
         // Connect disruptors
-        inputDisruptor.handleEventsWith(new BusinessLogicProcessor(outputDisruptor.getRingBuffer(), Constants.PERF_D, shouldJournal, outputJournaler));
-        outputDisruptor.handleEventsWith(new OutputProcessor(Constants.CSV_OUTPUT_DIS, Constants.PERF_D));
+        inputDisruptor.handleEventsWith(new BusinessLogicProcessor(outputDisruptor.getRingBuffer(), Constants.PERF_D));
+        outputDisruptor.handleEventsWith(new OutputProcessor(Constants.CSV_OUTPUT_DIS, Constants.PERF_D, outputJournaler,shouldJournal));
 
         // Start disruptors
         inputDisruptor.start();

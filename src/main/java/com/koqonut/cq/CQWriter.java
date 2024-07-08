@@ -33,6 +33,7 @@ public class CQWriter {
 
     public void close() {
         queue.close();
+        logger.info("CQ {} is closed ",queue);
     }
 
     public static void main(String[] args) {
