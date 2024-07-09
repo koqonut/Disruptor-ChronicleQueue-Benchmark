@@ -46,7 +46,7 @@ public class Consumer implements Callable<Boolean> {
             }
 
             // Parse data (assuming format: city;temperature)
-            String[] parts = data.split(";");
+            String[] parts = data.split(Constants.DELIMITER);
             String city = parts[0].trim();
             double temperature = Double.parseDouble(parts[1].trim());
 

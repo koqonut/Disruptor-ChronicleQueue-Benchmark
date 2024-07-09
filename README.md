@@ -22,7 +22,7 @@ throughput and latency.
     - **disruptor**: Contains the Disruptor implementation.
     - **arrayblockingqueue**: Contains the ArrayBlockingQueue implementation.
     - **concurrentlinkedqueue**: Contains the ConcurrentLinkedQueue implementation.
-- **src/main/data**: Contains the input data file (`measurements.txt`).
+- **src/main/data**: Contains the input data file (`city_temperatures.txt`).
 
 ## Prerequisites
 
@@ -35,26 +35,21 @@ throughput and latency.
 
 ### Data Generation
 
-Use [1BRC project](https://github.com/gunnarmorling/1brc) to generate the file with 1 billion records and place it in
-src/main/data
-
-Build the 1BRC project using Apache Maven:
+A python script is provided in src/main/data one parameter which 
+specifies the number of lines of city,temperature reading to generate in city_temperatures.txt.
+Use it to create a billion lines in a single file.
 
 ```
-./mvnw clean verify
+python generate_city_temperatures.py 1000000000
 
-Create the measurements file with 1B rows (just once):
-./create_measurements.sh 1000000000
 ```
-
-Rename the file to measurements_1B.txt and move it src/main/data
 
 Choose the proper constants and benchmark modes before running the code/
 
 To simulate the benchmarking, we need a large dataset. You can generate a synthetic dataset using the provided data
 generation script.
 
-# Example command to run benchmarks
+### Example command to run benchmarks
 
 ```
 
@@ -70,53 +65,86 @@ java -jar target/Chronicle-Queue-1.0-SNAPSHOT.jar com.koqonut.disruptor.InputPro
 
 # Benchmark results
 
+### Environment details
+
+```
+AWS Instance details t3.2xlarge   8vCPU 	32 GB RAM
+
+VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM
+
+21.0.3+9-LTS
+
+VM options: -Xlog:gc*:out/gc_16g.log:time,level,tags -Xms16g -Xmx16g -XX:+UseStringDeduplication
+
 ```
 
 
- JMH version: 1.37	ABQ (4R, 1W)    1823453.569
-
- VM version: JDK 21.0.3, OpenJDK 64-Bit Server VM, 21.0.3+9-LTS	ABQ (4R, 4W)    1814973.933
-
- AWS Instance details t3.2xlarge   8vCPU 	32 GB RAM
 
 
- VM invoker: /home/ec2-user/.sdkman/candidates/java/21.0.3-amzn/bin/java	CLQ (4R, 1W)    1633299.596    [1048576 queueLimit]
+### Impact of ring buffer size for reading 1 Billion lines from a dile in disk
 
- VM options: -Xlog:gc*:out/gc_bq_16g.log:time,level,tags -Xms16g -Xmx16g -XX:+UseStringDeduplication	CLQ (4R, 4W)    1521605.2    [1048576 queueLimit]
-
-Benchmark                                                                      (numReaders)  (numWriters)  (
-queueSize)  (ringBufferSize)  (shouldJournal)  Mode Cnt Score Error Units
-blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue 4 1 1048576 N/A N/A avgt 1823453.569 ms/op
-blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue 4 4 1048576 N/A N/A avgt 1814973.933 ms/op
-concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue 4 1 1048576 N/A N/A avgt 1633299.596 ms/op
-concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue 4 4 1048576 N/A N/A avgt 1521605.200 ms/op
-disruptor.InputProcessor.benchmarkDisruptor N/A N/A N/A 131072 false avgt 707242.338 ms/op
-singlethread.SingleThreadSolver.process N/A N/A N/A N/A N/A avgt 765399.803 ms/op
+|         Benchmark          |    ringBufferSize    | Avg time Score (ms/op) | Units |
+|:--------------------------:|:--------------------:|:----------------------:|----------------------:|
+|       BlockingQueue        |        65536         |       642222.574       | ms/op |
+|       BlockingQueue        |        131072        |       672457.457       |ms/op |
+|   ConcurrentLinkedQueue    |        262144        |       641021.406       |ms/op |
+|   ConcurrentLinkedQueue    |        524288        |       701570.130       |ms/op |
+|         Disruptor          |      1048576/A       |       777010.755       |ms/op |
+|        Singlethread        |       2097152        |       821035.036       |ms/op |
 
 
 
-```
+#### Time taken to read 1 Billion lines from a file in disk using Array blocking queue, concurrent linked queue , disruptor and Single threaded process
 
-|Benchmark                   | (numReaders) | (numWriters) |   (queueSize)  | (ringBufferSize)  | Avg time Score (ms/op)|
-|:--------------------------:|:------------:|-------------:|:--------------:|:-----------------:|----------------------:|
-|BlockingQueue               |     4        |   1          |    1048576     |      N/A          |   1823453.569 ms/op   |
-|BlockingQueue               |     4        |   4          |    1048576     |      N/A          |   1814973.933 ms/op   |
-|ConcurrentLinkedQueue       |     4        |   1          |    1048576     |      N/A          |   1633299.596 ms/op   |
-|ConcurrentLinkedQueue       |     4        |   4          |    1048576     |      N/A          |   1521605.2   ms/op   |
-|Disruptor                   |     N/A      |   N/A        |       N/A      |      131072       |   707242.338  ms/op   |
-|Singlethread                |     N/A      |   N/A        |        N/A     |      N/A          |   765399.803  ms/op   |
-
-
-
-Iteration   1: 705563173.097 us/op
-Iteration   2: 936506900.219 us/op
-
-
-Result "com.koqonut.disruptor.InputProcessor.benchmarkDisruptor":
-821035036.658 us/op
+| Benchmark                                                                       | (numReaders) | (numWriters) | (queueSize) | (ringBufferSize| Mode  | Cnt         | Score  | Error  | Units   |
+|---------------------------------------------------------------------------------|--------------|--------------|-------------|--------|--------|-------------|--------|--------|---------|
+| blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue                      | 4            | 1            | 1048576     | N/A|avgt   | 1847657.230 |        |        | ms/op   |
+| blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue                      | 4            | 4            | 1048576     |  N/A|avgt   | 1891556.671 |        |        | ms/op   |
+| blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue                      | 4            | 8            | 1048576     |  N/A|avgt   | 1896590.471 |        |        | ms/op   |
+| blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue                      | 4            | 16           | 1048576     |  N/A|avgt   | 1893679.263 |        |        | ms/op   |
+| concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue    | 4            | 1            | 1048576     |  N/A|avgt   | 1623709.735 |        |        | ms/op   |
+| concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue    | 4            | 4            | 1048576     | N/A| avgt   | 1587018.099 |        |        | ms/op   |
+| concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue    | 4            | 8            | 1048576     |  N/A|avgt   | 1582008.802 |        |        | ms/op   |
+| concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue    | 4            | 16           | 1048576     |  N/A|avgt   | 1626868.889 |        |        | ms/op   |
+| singlethread.SingleThreadSolver.process                                          | N/A          | N/A          | N/A         |  N/A|avgt   | 761912.831  |        |        | ms/op   |
+|InputProcessor.benchmarkDisruptor                                                 |     N/A      |   N/A        |       N/A   |  131072    |avgt| 707242.338  | |   | ms/op|
 
 
-# Run complete. Total time: 03:32:40
+# Conclusion
+
+From the benchmark table provided, several conclusions can be drawn based on the performance metrics  of different queue implementations across varying numbers of readers and writers:
+
+### Comparison of Queue Implementations:
+
+#### BlockingQueue vs ConcurrentLinkedQueue:
+Across different configurations of readers and writers, ConcurrentLinkedQueue generally shows lower average times (us/op) compared to BlockingQueue.
+This suggests that for scenarios with multiple readers and writers (numReaders and numWriters > 1), ConcurrentLinkedQueue may provide better performance due to its non-blocking characteristics.
+Scaling with Readers and Writers:
+
+Impact of Scalability:
+As the number of readers and writers increases (numReaders and numWriters), the average operation time tends to increase for both queue implementations.
+This indicates potential contention and overheads associated with concurrent access in both BlockingQueue and ConcurrentLinkedQueue under higher load scenarios.
+Single Threaded Performance:
+
+#### SingleThreadSolver:
+The single-threaded approach shows significantly lower operation times (us/op) compared to multi-threaded approaches using queues.
+This highlights the overhead introduced by concurrent processing and synchronization in multi-threaded scenarios.
+Choosing the Right Queue:
+
+#### Disruptor 
+
+Disruptor outperforms BlockingQueue vs ConcurrentLinkedQueue implying that avoiding locks can drastically improve performance
+
+
+# Next steps
+
+Optimize for garbage collection by pre allocation objects.
+Using Simple Binary Encoding serialization to transfer data between thread.
+
+---------------------------------------------------------------------------------------------
+
+
+### Raw  Data
 
 
 Benchmark                          (ringBufferSize)  (shouldJournal)  Mode  Cnt          Score   Error  Units
@@ -126,22 +154,6 @@ InputProcessor.benchmarkDisruptor            262144            false  avgt    2 
 InputProcessor.benchmarkDisruptor            524288            false  avgt    2  701570130.256          us/op
 InputProcessor.benchmarkDisruptor           1048576            false  avgt    2  777010755.236          us/op
 InputProcessor.benchmarkDisruptor           2097152            false  avgt    2  821035036.658          us/op
-
-
-
-
-# Run progress: 96.30% complete, ETA 00:08:57
-# Fork: 1 of 1
-Iteration   1: 761912831.567 us/op
-
-
-Result "com.koqonut.singlethread.SingleThreadSolver.process":
-761912831.567 us/op
-
-
-# Run complete. Total time: 04:05:32
-
-
 
 Benchmark                                                                      (numReaders)  (numWriters)  (queueSize)  Mode  Cnt           Score   Error  Units
 blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue                               4             1      1048576  avgt       1847657230.663          us/op
@@ -153,5 +165,25 @@ concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue   
 concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue             4             8      1048576  avgt       1582008802.037          us/op
 concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue             4            16      1048576  avgt       1626868889.970          us/op
 singlethread.SingleThreadSolver.process                                                 N/A           N/A          N/A  avgt        761912831.567          us/op
+
+Benchmark                                                                      (numReaders)  (numWriters)  (
+queueSize)  (ringBufferSize)  (shouldJournal)  Mode Cnt Score Error Units
+blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue 4 1 1048576 N/A N/A avgt 1823453.569 ms/op
+blockingQueue.BlockingQueueProcessor.benchmarkBlockingQueue 4 4 1048576 N/A N/A avgt 1814973.933 ms/op
+concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue 4 1 1048576 N/A N/A avgt 1633299.596 ms/op
+concurrentQueue.ConcurrentLinkedQueueProcessor.benchmarkConcurrentLinkedQueue 4 4 1048576 N/A N/A avgt 1521605.200 ms/op
+disruptor.InputProcessor.benchmarkDisruptor N/A N/A N/A 131072 false avgt 707242.338 ms/op
+singlethread.SingleThreadSolver.process N/A N/A N/A N/A N/A avgt 765399.803 ms/op
+
+|Benchmark                   | (numReaders) | (numWriters) |   (queueSize)  | (ringBufferSize)  | Avg time Score (ms/op)|
+|:--------------------------:|:------------:|-------------:|:--------------:|:-----------------:|----------------------:|
+|BlockingQueue               |     4        |   1          |    1048576     |      N/A          |   1823453.569 ms/op   |
+|BlockingQueue               |     4        |   4          |    1048576     |      N/A          |   1814973.933 ms/op   |
+|ConcurrentLinkedQueue       |     4        |   1          |    1048576     |      N/A          |   1633299.596 ms/op   |
+|ConcurrentLinkedQueue       |     4        |   4          |    1048576     |      N/A          |   1521605.2   ms/op   |
+|Disruptor                   |     N/A      |   N/A        |       N/A      |      131072       |   707242.338  ms/op   |
+|Singlethread                |     N/A      |   N/A        |        N/A     |      N/A          |   765399.803  ms/op   |
+
+
 
 

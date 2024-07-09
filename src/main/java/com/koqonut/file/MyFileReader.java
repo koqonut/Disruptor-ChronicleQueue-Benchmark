@@ -41,10 +41,13 @@ public class MyFileReader implements Callable<Boolean> {
             String line;
             while (records > 0 && (line = reader.readLine()) != null) {
 
+                if(line.isEmpty()){
+                    continue;
+                }
                 if (records % Constants.LOG_DISPLAYER == 0) {
                     logger.info("Read file {}", (recordCount - records));
                 }
-                String[] parts = line.split(";");
+                String[] parts = line.split(Constants.DELIMITER);
                 String city = parts[0].trim();
                 double temperature = Double.parseDouble(parts[1].trim());
 

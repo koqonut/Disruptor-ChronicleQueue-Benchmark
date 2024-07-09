@@ -86,7 +86,10 @@ public class SingleThreadSolver {
                 if (count % Constants.LOG_DISPLAYER == 0) {
                     logger.info("Read file {}", (count));
                 }
-                String[] parts = line.split(";");
+                if(line.isEmpty()){
+                    continue;
+                }
+                String[] parts = line.split(Constants.DELIMITER);
                 String city = parts[0].trim();
                 double temperature = Double.parseDouble(parts[1].trim());
                 maxTemp.put(city, Math.max(maxTemp.getOrDefault(city, Double.MIN_VALUE), temperature));

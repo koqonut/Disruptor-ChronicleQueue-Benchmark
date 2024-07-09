@@ -7,13 +7,15 @@ public class Constants {
     public static final int RECORDS_TO_READ_100M = 100_000_000;
     public static final int RECORDS_TO_READ_1B = 1_000_000_000;
 
-    public static String CSV_INPUT_1M = "src/main/data/measurements_1M.txt";
-    public static String CSV_INPUT_10M = "src/main/data/measurements_10M.txt";
-    public static String CSV_INPUT_100M = "src/main/data/measurements_100M.txt";
-    public static String CSV_INPUT_1B = "src/main/data/measurements_1B.txt";
+    public static String CSV_INPUT_1M = "src/main/data/city_temperatures_1M.txt";
+    public static String CSV_INPUT_10M = "src/main/data/city_temperatures_10M.txt";
+    public static String CSV_INPUT_100M = "src/main/data/city_temperatures_100M.txt";
+    public static String CSV_INPUT_1B = "src/main/data/city_temperatures.txt";
 
     public static final int LOG_DISPLAYER = 10_000_000;
 
+
+    public static final String DELIMITER =",";
     //public static final int RECORDS_TO_READ = RECORDS_TO_READ_1M;
     //public static String CSV_INPUT_FILEPATH = CSV_INPUT_1M;
 
@@ -24,7 +26,7 @@ public class Constants {
     //public static String CSV_INPUT_FILEPATH = CSV_INPUT_100M;
 
 
-    public static final int RECORDS_TO_READ = RECORDS_TO_READ_1B;
+    public static final int RECORDS_TO_READ = RECORDS_TO_READ_1M;
     public static String CSV_INPUT_FILEPATH = CSV_INPUT_1B;
 
 
